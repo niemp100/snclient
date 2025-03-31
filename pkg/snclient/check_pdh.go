@@ -80,14 +80,6 @@ func (c *CheckPDH) Check(_ context.Context, _ *Agent, check *CheckData, _ []Argu
 	if ret != win.ERROR_SUCCESS {
 		return nil, fmt.Errorf("could not open query, something is wrong with the countername")
 	}
-	/*
-		- If Expand Index -> Number to Names (is 4\30) *
-		- Check If Counter is Valid *
-		- Gather All Possible Path *
-		- Add All Possible Path to Query and Save Coounter Handles in Map
-		- Gather All Data
-		- Request Formatted Values as Array - Single Values are arrays with one entry
-	*/
 
 	tmpPath := c.CounterPath
 	if c.EnglishFallBackNames {
