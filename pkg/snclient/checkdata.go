@@ -127,7 +127,6 @@ type CheckData struct {
 	exampleDefault         string
 	exampleArgs            string
 	timezone               *time.Location // timezone used for date output set by --timezone
-	optionalAlias          string
 }
 
 func (cd *CheckData) Finalize() (*CheckResult, error) {
@@ -702,15 +701,6 @@ func (cd *CheckData) preParseArgs(args []string) (sanitized []Argument, defaultW
 		argExpr := cd.removeQuotes(args[idx])
 		split := strings.SplitN(argExpr, "=", 2)
 		keyword := cd.removeQuotes(split[0])
-		var optionalAlias string
-		if strings.Contains(keyword, ":") {
-			parts := strings.Split(keyword, ":")
-			keyword = parts[0]
-			optionalAlias = parts[1]
-		}
-		if optionalAlias != "" {
-			cd.optionalAlias = optionalAlias
-		}
 		argValue, newIdx, err2 := cd.fetchNextArg(args, split, keyword, idx, numArgs)
 		if err2 != nil {
 			return nil, "", "", false, err2
