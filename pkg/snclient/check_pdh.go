@@ -6,9 +6,6 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	"syscall"
-	"time"
-	"unsafe"
 
 	"github.com/consol-monitoring/snclient/pkg/pdh"
 )
@@ -200,67 +197,4 @@ func (c *CheckPDH) collectValuesForAllCounters(hQuery pdh.PDH_HQUERY, counters m
 	}
 
 	return nil
-}
-
-func (c *CheckPDH) addAllPathToCounter(hQuery pdh.PDH_HQUERY, possiblePaths []string) (map[string]pdh.PDH_HCOUNTER, error) {
-	counters := map[string]pdh.PDH_HCOUNTER{}
-
-	for _, path := range possiblePaths {
-		var hCounter pdh.PDH_HCOUNTER
-		ret := pdh.PdhAddCounter(hQuery, path, 0, &hCounter)
-		if ret != pdh.ERROR_SUCCESS {
-			return nil, fmt.Errorf("could not add one of the possible paths to the query: %s, api response code: %d", path, ret)
-		}
-		counters[path] = hCounter
-	}
-
-	return counters, nil
-}
-
-func collectQueryData(hQuery *pdh.PDH_HQUERY) uint32 {
-	ret := pdh.PdhCollectQueryData(*hQuery)
-	if ret != pdh.PDH_MORE_DATA && ret != pdh.ERROR_SUCCESS {
-		return ret
-	}
-	// PDH requires a double collection with a second wait between the calls See MSDN
-	time.Sleep(time.Duration(1))
-	ret = pdh.PdhCollectQueryData(*hQuery)
-
-	return ret
-}
-
-/*
-- Collect Data
-- Collect formatted with size = 0 to get actual size
-- if More Data -> Create Actual Array and fill
-*/
-func collectLargeValuesArray(hCounter pdh.PDH_HCOUNTER, hQuery pdh.PDH_HQUERY, resArr [1]pdh.PDH_FMT_COUNTERVALUE_ITEM_LARGE) (values []pdh.PDH_FMT_COUNTERVALUE_ITEM_LARGE, apiResponseCode uint32) {
-	var ret uint32
-	var filledBuf []pdh.PDH_FMT_COUNTERVALUE_ITEM_LARGE
-	size := uint32(0)
-	bufferCount := uint32(0)
-	if res := collectQueryData(&hQuery); res != pdh.ERROR_SUCCESS {
-		return nil, res
-	}
-	if ret = pdh.PdhGetFormattedCounterArrayLarge(hCounter, &size, &bufferCount, &resArr[0]); ret == pdh.PDH_MORE_DATA {
-		// create array of size = bufferCount * sizeOf(pdh.PDH_FMT_COUNTERVALUE_ITEM_LARGE)
-		filledBuf = make([]pdh.PDH_FMT_COUNTERVALUE_ITEM_LARGE, bufferCount)
-		ret = pdh.PdhGetFormattedCounterArrayLarge(hCounter, &size, &bufferCount, &filledBuf[0])
-	}
-
-	return filledBuf, ret
-}
-
-func utf16PtrToString(ptr *uint16) string {
-	if ptr == nil {
-		return ""
-	}
-	end := unsafe.Pointer(ptr)
-	charCounter := 0
-	for *(*uint16)(end) != 0 {
-		end = unsafe.Pointer(uintptr(end) + unsafe.Sizeof(*ptr))
-		charCounter++
-	}
-
-	return syscall.UTF16ToString(unsafe.Slice(ptr, charCounter))
 }
