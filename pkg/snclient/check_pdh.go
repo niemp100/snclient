@@ -6,6 +6,7 @@ import (
 
 func init() {
 	AvailableChecks["check_pdh"] = CheckEntry{"check_pdh", NewCheckPDH}
+	AvailableChecks["CheckCounter"] = CheckEntry{"check_pdh", NewCheckPDH}
 }
 
 type CheckPDH struct {
@@ -34,12 +35,13 @@ func (c *CheckPDH) Build() *CheckData {
 		emptySyntax:  "%(status) - No counter found",
 		emptyState:   CheckExitUnknown,
 		args: map[string]CheckArgument{
-			"counter":      {value: &c.CounterPath, description: "The fully qualified counter name"},
-			"host":         {value: &c.HostName, description: "The name of the host machine in network where the counter should be searched, defaults to local machine"},
-			"expand-index": {value: &c.ExpandIndex, description: "Should indices be translated?"},
-			"instances":    {value: &c.Instances, description: "Expand wildcards and fetch all instances"},
-			"type":         {value: &c.Type, description: "This can be large or float depending what you expect, default is large"},
-			"english":      {value: &c.EnglishFallBackNames, description: "Using English names regardless of system language. Requires Windows Vista or higher"},
+			"counter":      {value: &c.CounterPath, description: "The fully qualified Counter Name"},
+			"Counter":      {value: &c.CounterPath, description: "The fully qualified Counter Name"},
+			"host":         {value: &c.HostName, description: "The Name Of the Host Mashine in Network where the Counter should be searched, defults to local mashine"},
+			"expand-index": {value: &c.ExpandIndex, description: "Should Indices be translated?"},
+			"instances":    {value: &c.Instances, description: "Expand WildCards And Fethch all instances"},
+			"type":         {value: &c.Type, description: "this can be large or float depending what you expect, default is large "},
+			"english":      {value: &c.EnglishFallBackNames, description: "Using English Names Regardless of system Language requires Windows Vista or higher"},
 		},
 		result: &CheckResult{
 			State: CheckExitOK,
@@ -53,7 +55,8 @@ func (c *CheckPDH) Build() *CheckData {
 		Everything looks good
 		'foo value'=18;80;90
 		`,
-		exampleArgs: `counter=\\System\\System Up Time" "warn=value > 5" "crit=value > 9999`,
+		exampleArgs:     `counter=\\System\\System Up Time" "warn=value > 5" "crit=value > 9999`,
+		argsPassthrough: true,
 	}
 }
 

@@ -23,6 +23,14 @@ func TestCheckPDH(t *testing.T) {
 	StopTestAgent(t, snc)
 }
 
+func TestCheckPDHOptionalAlias(t *testing.T) {
+	// svchost.exe should run on all windows instances
+	snc := StartTestAgent(t, "")
+	res := snc.RunCheck("check_pdh", []string{`counter:svchost=\Process(svchost)\Private Bytes`, "warn=value < 200", "crit=value < 500", "show-all", "instances", "english"})
+	assert.Equalf(t, CheckExitOK, res.State, "The check could not be run successful")
+	assert.Contains(t, string(res.BuildPluginOutput()), "OK")
+}
+
 func TestCheckPDHExpandingWildCardPath(t *testing.T) {
 	snc := StartTestAgent(t, "")
 
