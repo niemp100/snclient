@@ -33,7 +33,7 @@ func (c *CheckPDH) Build() *CheckData {
 	return &CheckData{
 		implemented:  Windows,
 		name:         "check_pdh",
-		description:  "Checks pdh paths Handles WildCard Expansion",
+		description:  "Checks pdh paths and handles WildCard expansion. Also available with the alias CheckCounter",
 		detailSyntax: "%(name)",
 		okSyntax:     "%(status) - All %(count) counter values are ok",
 		topSyntax:    "%(status) - %(problem_count)/%(count) counter (%(count)) %(problem_list)",
@@ -104,7 +104,7 @@ func (c *CheckPDH) Check(_ context.Context, _ *Agent, check *CheckData, args []A
 	}
 
 	// Find Indices and replace with Performance Name
-	r := regexp.MustCompile(`\\d+`)
+	r := regexp.MustCompile(`\d+`)
 	matches := r.FindAllString(c.CounterPath, -1)
 	for _, match := range matches {
 		index, err := strconv.Atoi(strings.ReplaceAll(match, `\`, ""))
@@ -115,7 +115,7 @@ func (c *CheckPDH) Check(_ context.Context, _ *Agent, check *CheckData, args []A
 		if res != pdh.ERROR_SUCCESS {
 			return nil, fmt.Errorf("could not find given index: %d response code: %d", index, res)
 		}
-		tmpPath = strings.Replace(tmpPath, match, "\\"+path, 1)
+		tmpPath = strings.Replace(tmpPath, match, path, 1)
 	}
 
 	// Expand Counter Path That Ends with WildCard *
