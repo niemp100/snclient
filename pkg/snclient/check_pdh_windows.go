@@ -15,7 +15,7 @@ import (
 
 // Check implements CheckHandler.
 func (c *CheckPDH) check(_ context.Context, _ *Agent, check *CheckData, args []Argument) (*CheckResult, error) {
-	// If the counterpath is empty we need to parse the argument ourself for the optional alias case counter:alias=... //nolint:misspell //counterpath is a windows term
+	// If the counter path is empty we need to parse the argument ourself for the optional alias case counter:alias=...
 	if c.CounterPath == "" {
 		err := c.parseCheckSpecificArgs(args)
 		if err != nil {
