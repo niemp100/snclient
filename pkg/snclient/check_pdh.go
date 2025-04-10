@@ -147,13 +147,13 @@ func (c *CheckPDH) parseCheckSpecificArgs(args []Argument) error {
 	carg := args[0]
 	parts := strings.Split(carg.key, ":")
 	if len(parts) < 2 {
-		return fmt.Errorf("No counter defined")
+		return fmt.Errorf("no counter defined")
 	}
 	counterKey := parts[0]
 	alias := parts[1]
 
 	if !strings.EqualFold(counterKey, "counter") {
-		return fmt.Errorf("Something went wrong with you syntax")
+		return fmt.Errorf("expected a counter definition")
 	}
 	c.OptionalAlias = alias
 	c.CounterPath = carg.value

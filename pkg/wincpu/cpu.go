@@ -1,3 +1,5 @@
+//go:build windows
+
 // SPDX-License-Identifier: BSD-3-Clause
 package wincpu
 
