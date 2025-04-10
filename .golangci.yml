@@ -149,4 +149,6 @@ issues:
     - pkg/pdh/pdh.go
     - pkg/utils/common.go
     - pkg/utils/common_windows.go
+    - pkg/wincpu/cpu_windows.go
+    - pkg/wincpu/cpu.go
 
