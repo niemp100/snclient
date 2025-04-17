@@ -152,17 +152,24 @@ type AgentFlags struct {
 }
 
 type Agent struct {
-	config            *Config      // reference to global config object
-	Listeners         *ModuleSet   // Listeners stores if we started listeners
-	Tasks             *ModuleSet   // Tasks stores if we started task runners
-	Counter           *counter.Set // Counter stores collected counters from tasks
-	flags             *AgentFlags
-	cpuProfileHandler *os.File
-	runSet            *AgentRunSet
-	osSignalChannel   chan os.Signal
-	running           atomic.Value
-	Log               *factorlog.FactorLog
-	profileServer     *http.Server
+	config                *Config      // reference to global config object
+	Listeners             *ModuleSet   // Listeners stores if we started listeners
+	Tasks                 *ModuleSet   // Tasks stores if we started task runners
+	Counter               *counter.Set // Counter stores collected counters from tasks
+	flags                 *AgentFlags
+	cpuProfileHandler     *os.File
+	runSet                *AgentRunSet
+	osSignalChannel       chan os.Signal
+	running               atomic.Value
+	Log                   *factorlog.FactorLog
+	profileServer         *http.Server
+	alreadyParsedLogfiles map[string]ParsedFile
+}
+
+type ParsedFile struct {
+	path   string
+	line   int
+	offset int
 }
 
 // AgentRunSet contains the runtime dynamic references
