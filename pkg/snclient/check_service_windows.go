@@ -115,6 +115,8 @@ func MgrConnectReadOnly() (*mgr.Mgr, error) {
 }
 
 func (l *CheckService) Check(ctx context.Context, _ *Agent, check *CheckData, _ []Argument) (*CheckResult, error) {
+	// Default shows alll, show-all deactivates the flag in this check
+	check.showAll = !check.showAll
 	// make excludes case insensitive
 	for i := range l.excludes {
 		l.excludes[i] = strings.ToLower(l.excludes[i])
@@ -178,7 +180,7 @@ func (l *CheckService) Check(ctx context.Context, _ *Agent, check *CheckData, _ 
 		}
 	}
 
-	if len(l.services) == 0 && !check.showAll {
+	if len(l.services) == 0 && check.showAll {
 		check.addCountMetrics = true
 		check.addProblemCountMetrics = true
 	}
@@ -254,7 +256,7 @@ func (l *CheckService) addService(ctx context.Context, check *CheckData, ctrlMgr
 	check.listData = append(check.listData, listEntry)
 
 	// do not add metrics for all services unless requested
-	if len(services) == 0 && !check.showAll {
+	if len(services) == 0 && check.showAll {
 		return nil
 	}
 

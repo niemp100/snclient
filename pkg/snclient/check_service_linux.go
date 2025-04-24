@@ -112,6 +112,8 @@ Check memory usage of specific service:
 
 func (l *CheckService) Check(ctx context.Context, snc *Agent, check *CheckData, _ []Argument) (*CheckResult, error) {
 	l.snc = snc
+	// Default shows alll, show-all deactivates the flag in this check
+	check.showAll = !check.showAll
 
 	// make excludes case insensitive
 	for i := range l.excludes {
