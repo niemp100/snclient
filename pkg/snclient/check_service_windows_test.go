@@ -21,12 +21,12 @@ func TestCheckService(t *testing.T) {
 	assert.Containsf(t, string(res.BuildPluginOutput()), "The specified service does not exist as an installed service", "output matches")
 
 	// search service by display name
-	res = snc.RunCheck("check_service", []string{"service=Server"})
+	res = snc.RunCheck("check_service", []string{"service=Server", "show-all"})
 	assert.Equalf(t, CheckExitOK, res.State, "state OK")
 	assert.Containsf(t, string(res.BuildPluginOutput()), "OK - All 1 service", "output matches")
 
 	// search service by non case name
-	res = snc.RunCheck("check_service", []string{"service=server"})
+	res = snc.RunCheck("check_service", []string{"service=server", "show-all"})
 	assert.Equalf(t, CheckExitOK, res.State, "state OK")
 	assert.Containsf(t, string(res.BuildPluginOutput()), "OK - All 1 service", "output matches")
 }

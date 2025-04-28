@@ -118,7 +118,7 @@ func TestDaemonRequests(t *testing.T) {
 		runCmd(t, &cmd{
 			Cmd: bin,
 			Args: append(baseArgs, "check_service", "crit=count == 0", "top-syntax=%(list)",
-				"filter='"+`( name = 'svc1' or name like 'svc2' ) and state = 'running'`+"'", "empty-syntax='%(status) - neither svc1 nor svc2 is started'"),
+				"filter='"+`( name = 'svc1' or name like 'svc2' ) and state = 'running'`+"'", "empty-syntax='%(status) - neither svc1 nor svc2 is started'", "show-all"),
 			Like: []string{`CRITICAL - neither svc1 nor svc2 is started \|'count'=0;;0;0; 'failed'=0;;;0;`},
 			Exit: 2,
 		})
