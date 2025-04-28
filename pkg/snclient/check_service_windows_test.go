@@ -8,7 +8,7 @@ import (
 
 func TestCheckService(t *testing.T) {
 	snc := Agent{}
-	res := snc.RunCheck("check_service", []string{"filter='state=running'"})
+	res := snc.RunCheck("check_service", []string{"filter='state=running'", "show-all"})
 	assert.Equalf(t, CheckExitOK, res.State, "state OK")
 	assert.Regexpf(t,
 		`^OK - All \d+ service\(s\) are ok.`,

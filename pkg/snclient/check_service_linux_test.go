@@ -17,14 +17,14 @@ func TestCheckServiceLinux(t *testing.T) {
 	snc.Tasks = initSet.tasks
 	snc.config = initSet.config
 
-	res := snc.RunCheck("check_service", []string{"filter='state=running'"})
+	res := snc.RunCheck("check_service", []string{"filter='state=running'", "show-all"})
 	assert.Regexpf(t,
 		`^OK - All \d+ service\(s\) are ok.|UNKNOWN - No services found`,
 		string(res.BuildPluginOutput()),
 		"output matches",
 	)
 
-	res = snc.RunCheck("check_service", []string{"service=nonexistingservice"})
+	res = snc.RunCheck("check_service", []string{"service=nonexistingservice", "show-all"})
 	assert.Equalf(t, CheckExitUnknown, res.State, "state Unknown")
 	assert.Containsf(t, string(res.BuildPluginOutput()), "UNKNOWN - could not find service: nonexistingservice", "output matches")
 }
