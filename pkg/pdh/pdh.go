@@ -567,27 +567,26 @@ hCounter: Handle returned by OpenQuery
 returns the localized Counter Path String
 contains the same wildcards as before
 */
-func PdhGetCounterInfo(hConuter PDH_HCOUNTER, retrieveExplainText bool) (string, error) {
+func PdhGetCounterInfo(hCounter PDH_HCOUNTER, retrieveExplainText bool) (string, error) {
 	zz := uint32(0)
 	tr := uint8(1)
-	var fakeBuffer [1]byte
 	if res, _, _ := pdh_PdhGetCounterInfoW.Call(
-		uintptr(hConuter),
+		uintptr(hCounter),
 		uintptr(unsafe.Pointer(&tr)),
 		uintptr(unsafe.Pointer(&zz)),
-		uintptr(unsafe.Pointer(&fakeBuffer[0])),
+		uintptr(0),
 	); res != PDH_MORE_DATA {
-		return "", fmt.Errorf("Could not get Counter Info Response Code from Api Call: %d", res)
+		return "", fmt.Errorf("could not get counter info response code from api call: %d", res)
 	}
 	buffer := make([]byte, zz)
 	res, _, _ := pdh_PdhGetCounterInfoW.Call(
-		uintptr(hConuter),
+		uintptr(hCounter),
 		uintptr(unsafe.Pointer(&tr)),
 		uintptr(unsafe.Pointer(&zz)),
 		uintptr(unsafe.Pointer(&buffer[0])),
 	)
 	if res != ERROR_SUCCESS {
-		return "", fmt.Errorf("Could not get Counter Info Response Code from Api Call: %d", res)
+		return "", fmt.Errorf("could not get counter info response code from api call: %d", res)
 	}
 	counterInfo := *(*PDHCounterInfoA)(unsafe.Pointer(&buffer[0]))
 	path, _ := utf16PtrToString(counterInfo.SzFullPath)
