@@ -22,6 +22,7 @@ import (
 	"slices"
 	"sort"
 	"strings"
+	"sync"
 	"sync/atomic"
 	"syscall"
 	"time"
@@ -163,7 +164,7 @@ type Agent struct {
 	running               atomic.Value
 	Log                   *factorlog.FactorLog
 	profileServer         *http.Server
-	alreadyParsedLogfiles map[string]ParsedFile
+	alreadyParsedLogfiles sync.Map
 }
 
 type ParsedFile struct {
