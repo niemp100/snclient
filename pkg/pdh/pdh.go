@@ -591,6 +591,7 @@ func mszExpandedPathListToStringArr(ptr *uint16) []string {
 			}
 			end = unsafe.Add(end, 2)
 		}
+		end = unsafe.Add(end, 2)
 	}
 	return result
 }
